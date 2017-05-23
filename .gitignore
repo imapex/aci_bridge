@@ -104,3 +104,7 @@ ENV/
 .idea/misc.xml
 .idea/modules.xml
 .idea/workspace.xml
+Image/
+Media/IntroVideo/
+Media/Snapshots/
+Service/creds

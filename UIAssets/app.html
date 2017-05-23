@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+
+  <!-- Scripts -->
+  <!-- Token  -->
+  <script type="text/javascript" src="/extjs/ext-all-debug.js"></script>
+
+  <!--
+    The tokens of your app are stored in:
+        window.APIC_DEV_COOKIE and window.APIC_URL_TOKEN
+
+    They can also be retrieved using:
+        window.APIC_DEV_COOKIE = Ext.util.Cookies.get("app_<VENDOR DOMAIN>_<APPID>_token");
+        window.APIC_URL_TOKEN  = Ext.util.Cookies.get("app_<VENDOR DOMAIN>_<APPID>_urlToken");
+    where <VENDOR DOMAIN> and <APPID> are the fields 'vendordomain' and 'appid' in app.json.
+  -->
+  <script type="text/javascript">
+    window.APIC_DEV_COOKIE = Ext.util.Cookies.get("app_CIsco_Test_token");
+    window.APIC_URL_TOKEN =  Ext.util.Cookies.get("app_CIsco_Test_urlToken");
+
+    window.BACKEND_QUERY_URL = "https://" + window.location["host"] + "/appcenter/CIsco/Test";
+
+    window.addEventListener('message', function (e) {
+        if (e.source === window.parent) {
+            var tokenObj = Ext.decode(e.data, true);
+            if (tokenObj) {
+                window.APIC_DEV_COOKIE = tokenObj.token;
+                window.APIC_URL_TOKEN = tokenObj.urlToken;
+                Ext.util.Cookies.set("app_CIsco_Test_token", tokenObj.token);
+                Ext.util.Cookies.set("app_CIsco_Test_urlToken", tokenObj.urlToken);
+            }
+        }
+    });
+
+    function getUrlVars() {
+      var vars = {};
+      var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,
+          function(m,key,value) {
+              vars[key] = value;
+          });
+      return vars;
+    }
+
+
+  </script>
+  <link rel="stylesheet" href="css/aui-standard.min.css">
+
+  <!-- Include your scripts here -->
+  <script type="text/javascript" src="scripts/jquery-3.1.1.min.js"></script>
+
+  <script type="text/javascript">
+    // Testing communication with the APIC
+    function testAPICAPI(address) {
+      var query_url = 'https://' + address + '/api/class/fvTenant.json'
+      $.ajax({
+        url: query_url,
+        type: 'GET',
+        headers: {'DevCookie': window.APIC_DEV_COOKIE, 'APIC-challenge': window.APIC_URL_TOKEN},
+        success: function(data){
+          console.log(data);
+          $("#rest-running-ok").css('display', '');
+
+          console.log(data.imdata)
+        },
+        error: function(error){
+          console.log("===ERROR");
+          console.log(error);
+          $("#rest-running-nok").css('display', '');
+        },
+      });
+    }
+
+    testAPICAPI(window.location["host"]);
+  </script>
+
+  <script type="text/javascript">
+    function testAPI() {
+      var query_url = window.BACKEND_QUERY_URL + '/testAPI.json'
+      $.ajax({
+        url: query_url,
+        type: 'GET',
+        headers: {'DevCookie': window.APIC_DEV_COOKIE, 'APIC-challenge': window.APIC_URL_TOKEN},
+        success: function(data){
+          console.log("testAPI.json: " + data);
+          if (data.status != 200) {
+            $("#docker-running-nok").css('display', '');
+          }
+
+          $("#docker-running-ok").css('display', '');
+          $("#reply_testAPI").text(data);
+        },
+        error: function(error){
+          console.log("===ERROR");
+          console.log(error);
+          $("#docker-running-nok").css('display', '');
+        },
+      });
+    }
+
+    testAPI();
+  </script>
+
+  <script type="text/javascript">
+    function getTenant() {
+      var query_url = window.BACKEND_QUERY_URL + '/getTenant.json'
+      $.ajax({
+        url: query_url,
+        type: 'GET',
+        headers: {'DevCookie': window.APIC_DEV_COOKIE, 'APIC-challenge': window.APIC_URL_TOKEN},
+        success: function(data){
+          console.log("getTenant.json: " + data);
+          if (data.status != 200) {
+            $("#docker-communication-nok").css('display', '');
+            return;
+          }
+          else {
+            $("#docker-communication-ok").css('display', '');
+          }
+          var tenants = $.parseJSON(data);
+          console.log(tenants);
+        },
+        error: function(error){
+          console.log("===ERROR");
+          console.log(error);
+
+          $("#docker-communication-nok").css('display', '');
+          var errorMsg = JSON.parse(error.responseText)['message'];
+          $("#docker-communication-nok #reply_getTenant").text(error.status + ' - ' + errorMsg);
+        },
+      });
+    }
+
+    getTenant();
+  </script>
+
+</head>
+
+
+<body>
+  <!-- Your app here -->
+<header class="header">
+  <div class="header-bar container">
+      <a class="header-bar__logo">
+          <span class="icon-cisco"></span>
+      </a>
+      <div class="header-bar__main">
+          <div class="header-heading">
+              <h1 class="page-title">Test</h1>
+          </div>
+      </div>
+  </div>
+</header>
+
+  <div class="hero hero--blue hero--regular">
+      <div class="container">
+          <div class="hero__content">
+
+              <h1><b>Congratulations!</b> Your brand new app is working!</h1>
+              <div class="row">
+                <p class="col-md-6">Now, have fun and modify this app to create your own Cisco ACI application!</p>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class="content__main">
+    <div class="container">
+      <div class="row">
+
+        <div id="rest-running-ok" class="col-md-3" style="display:None">
+          <div class="toast">
+            <div class="toast__icon text-success icon-check"></div>
+              <div class="toast__body">
+                  <div class="toast__title">Front-end <-> APIC</div>
+                  <div class="toast__message">APIC is responding.</div>
+              </div>
+          </div>
+        </div>
+
+        <div id="rest-running-nok" class="col-md-3" style="display:None">
+          <div class="toast">
+            <div class="toast__icon text-danger icon-error"></div>
+              <div class="toast__body">
+                  <div class="toast__title">Front-end <-> APIC</div>
+                  <div class="toast__message">APIC is not responding.</div>
+              </div>
+          </div>
+        </div>
+
+        <div id="docker-running-ok" class="col-md-3" style="display:None">
+          <div class="toast">
+            <div class="toast__icon text-success icon-check"></div>
+              <div class="toast__body">
+                  <div class="toast__title">Front-end <-> Back-end</div>
+                  <div class="toast__message">Docker container is running. It replied: "<span id="reply_testAPI" style="font-weight: bold;"></span>"</div>
+              </div>
+          </div>
+        </div>
+
+    <div id="docker-running-nok" class="col-md-3" style="display:None">
+      <div class="toast">
+        <div class="toast__icon text-danger icon-error"></div>
+          <div class="toast__body">
+              <div class="toast__title">Front-end <-> Back-end</div>
+              <div class="toast__message">Docker container is not running.</div>
+          </div>
+      </div>
+    </div>
+
+    <div id="docker-communication-ok" class="col-md-3" style="display:None">
+      <div class="toast">
+        <div class="toast__icon text-success icon-check"></div>
+          <div class="toast__body">
+              <div class="toast__title">Back-end <-> APIC</div>
+              <div class="toast__message">Communication between the docker container and the APIC is OK.</div>
+          </div>
+      </div>
+    </div>
+
+    <div id="docker-communication-nok" class="col-md-3" style="display:None">
+      <div class="toast">
+        <div class="toast__icon text-danger icon-error"></div>
+          <div class="toast__body">
+              <div class="toast__title">Back-end <-> APIC</div>
+              <div class="toast__message">Communication between the docker container and the APIC is not working. It replied with the following HTTP error code: <span id="reply_getTenant" style="font-weight: bold;"></span></div>
+          </div>
+      </div>
+    </div><br>
+
+      </div>
+    </div>
+  </div>
+
+
+</body>
+
+</html>

@@ -5,7 +5,7 @@
         "Cisco Automation and Orchestration"
     ],
     "vendordomain": "Imapex",
-    "vendor": "CIsco",
+    "vendor": "Cisco",
     "name": "ACI Bridge",
     "permissionslevel": "read",
     "author": "Justin Barksdale, Clint Mann, Todd Kaczorowski",
@@ -20,5 +20,8 @@
     "appid": "ACIBridge",
     "permissions": [
         "admin"
-    ]
+    ],
+    "api": [
+    ],
+    "insertionURL": "fvns:infoVlanInstP:center:a"
 }

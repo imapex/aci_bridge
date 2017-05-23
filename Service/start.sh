@@ -2,4 +2,4 @@
 
 
 # Run the server
-python /home/app/src/Service/main.py
+python /home/app/src/Service/start.py
