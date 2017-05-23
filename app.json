@@ -1,0 +1,24 @@
+{
+    "category": [
+        "Tools and Utilities",
+        "Networking",
+        "Cisco Automation and Orchestration"
+    ],
+    "vendordomain": "Imapex",
+    "vendor": "CIsco",
+    "name": "ACI Bridge",
+    "permissionslevel": "read",
+    "author": "Justin Barksdale, Clint Mann, Todd Kaczorowski",
+    "api": {
+        "testAPI.json": "API To ",
+        "getTenant.json": "Get the list of the tenants in the docker container."
+    },
+    "apicversion": "2.2(2f)",
+    "shortdescr": "Bridge between ACI and UCS",
+    "version": "1.0",
+    "iconfile": "icon.png",
+    "appid": "ACIBridge",
+    "permissions": [
+        "admin"
+    ]
+}
